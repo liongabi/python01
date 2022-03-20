@@ -1,16 +1,17 @@
 #importing:
-import datetime
+
 import random
-import pandas as pd
-import numpy as np
-import datetime as dt
 import names
-from random import randrange
-from datetime import datetime
 from datetime import date, timedelta
 from random import choices
+import pandas as pd
+from pathlib import Path
 
-
+from random import randrange
+from datetime import datetime
+import numpy as np
+import datetime as dt
+import datetime
 
 def generator_ID():
     ID_generated=[]
@@ -18,6 +19,20 @@ def generator_ID():
     for i in random.sample(ID, k=5000):
         ID_generated.append(i)
     return ID_generated
+
+def birth_date_list():
+    d0 = date(1920, 1, 1)
+    df = date(2003, 12, 31)
+    k = 5000
+    dates = []
+
+    while d0 != df:
+        d0 += timedelta(days=1)
+        #d02 = d0.isoformat()
+        dates.append(d0)
+    list_dates = choices(dates, k=k)
+
+    return list_dates
 
 def female_full_name():
     female_full_name=[]
@@ -33,22 +48,46 @@ def male_full_name():
         male_full_name.append(rand_male_name)
     return(male_full_name)
 
-def birth_date():
-    d0 = date(1920, 1, 1)
-    df = date(2003, 12, 31)
-    k = 5000
-    dates = []
+def names_list():
+    female_names = female_full_name()
+    male_names = male_full_name()
+    names = female_names + male_names
 
-    while d0 != df:
-        d0 += timedelta(days=1)
-        d02 = d0.strftime('%Y-%m-%d')
-        dates.append(d02)
-    list_dates = choices(dates, k=k)
+    return names
 
-    return list_dates
+def sex_list():
+    female_sex_list=[]
+    contador_female=0
 
-def age():
+    while contador_female < 2500:
+        female_sex_list.append('F')
+        contador_female += 1
+
+    male_sex_list=[]
+    contador_male=0
+
+    while contador_male < 2500:
+        male_sex_list.append('M')
+        contador_male += 1
+
+    sex_list= female_sex_list + male_sex_list
+    return(sex_list)
+
+#creating te table with the generated information:
+
+ID = generator_ID()
+name = names_list()
+sex=sex_list()
+birth_date=birth_date_list()
 
 
-    pass
+#database = pd.DataFrame(data= (ID, name, sex, birth_date),  columns=None, copy=True).transpose()
+
+database = {'ID':ID, 'Name': name, 'Sex': sex, 'Birth': birth_date}
+dt= pd.DataFrame(data=database)
+
+filepath= Path('G:\Meu Drive\out.csv')
+filepath.parent.mkdir(parents=True, exist_ok=True)
+dt.to_csv(filepath, index=False)
+print("OK")
 
